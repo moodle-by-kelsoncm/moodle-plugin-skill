@@ -33,6 +33,11 @@
   2. Upload the release ZIP (`gh release download v<release> -p '*.zip'`). The form fills in type, component, version, release name, maturity and Moodle versions.
   3. Fill in the tag (`v<release>`) and the release notes (the fixes for the reviewer).
   4. The Marketplace automated test takes about 10 minutes.
+- First submission of a new plugin (`/plugins/submit`):
+  1. Check that the component has no page yet (`/plugins/<component>` returns 404).
+  2. Choose *Free plugin*, upload the release ZIP and tick "I have read the Plugin Submission Guidelines". That box is the maintainer's statement: let the maintainer tick it.
+  3. *Add plugin details*: the form fills in the technical fields from the ZIP (check maturity and Moodle versions); fill in release notes, repository URL, branch, tag (`v<release>`), bug tracker, a listing name that says what the plugin is (not only the `pluginname` string), the HTML description (see the checklist) and the screenshots from `docs/*/img`.
+  4. The automated tests run for about 10 minutes; the page does not refresh by itself. Then the submission is in the review queue with a ticket (`MMR-<n>`) shown on *Track & update*.
 
 ## Review statuses
 | Status | Can add a version or edit details? |

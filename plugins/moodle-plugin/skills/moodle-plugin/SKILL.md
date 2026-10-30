@@ -3,7 +3,7 @@ name: moodle-plugin
 description: Use whenever you create, review, fix, document, version or publish a Moodle plugin (mod_, local_, block_, tool_, tiny_, media_, repository_, filter_, format_, theme_, qtype_ and others), including answering the Moodle Marketplace reviewer (MMR-* or CONTRIB-* tickets), preparing a release, filling in the plugin page on marketplace.moodle.com, writing the plugin documentation or running moodle-plugin-ci locally with act. Encodes what passes the Marketplace review and what it rejects.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   repository: "https://github.com/moodle-by-kelsoncm/moodle-plugin-skill"
 ---
 
@@ -15,6 +15,7 @@ Plugins built this way passed the Moodle Marketplace review on the first resubmi
 Reference implementations (public, follow them when in doubt):
 - `eduplay-moodle-suite/moodle-local_eduplay`, plus `moodle-media_eduplay`, `moodle-tiny_eduplay` and `moodle-repository_eduplay`: approved plugins with the CI, release and documentation setup described here.
 - `moodle-by-kelsoncm/mod_imagemap` 1.3.0: an activity module fixed after a Marketplace review (backup/restore, External Services, AMD ES6).
+- `moodle-by-kelsoncm/profilefield_json` 1.1.0 and `moodle-by-kelsoncm/customfield_json` 1.0.0: a profile field and a custom field with a bundled third-party JavaScript library, validation on every save path and an editor that also starts inside modal forms.
 
 ## Before you start
 - Follow the project's own conventions for issues, branches, commit messages and time tracking. If it has none, use one issue per reviewer finding and one branch per change.
@@ -29,7 +30,7 @@ Reference implementations (public, follow them when in doubt):
    - `$plugin->maturity` must match the release: a non-stable maturity is published as a pre-release.
 2. **Language:** ship only `lang/en`; other languages come through AMOS. Keep strings in alphabetical order and without section comments (the code checker warns about both).
 3. **GPL boilerplate in every file**, including `amd/src` JavaScript, CSS and Mustache. See [references/review-checklist.md](references/review-checklist.md).
-4. **CSS:** only `styles.css`, which Moodle loads on its own. Never `$PAGE->requires->css()` for it. Scope rules with the page class (`.path-mod-<x>`) or plugin-specific classes.
+4. **CSS:** only `styles.css`, which Moodle loads on its own. Never `$PAGE->requires->css()` for it. Scope rules with the page class (`.path-mod-<x>`) or plugin-specific classes. The only other stylesheet is the one shipped with a third-party library (item 6).
 5. **HTML** comes from templates (`$OUTPUT->render_from_template`). No `echo '<div>'` in pages.
 6. **JavaScript:**
    - ES6 modules in `amd/src`, started with `$PAGE->requires->js_call_amd()`.
@@ -37,6 +38,9 @@ Reference implementations (public, follow them when in doubt):
    - Large data goes in a `data-config` (JSON) attribute of the template; `js_call_amd` complains about arguments over 1024 characters.
    - Confirm with `core/notification` (`saveCancelPromise`).
    - Bootstrap modals through jQuery (`$(el).modal('show')`), which works with Bootstrap 4 (Moodle 4.5) and 5.
+   - **Third-party libraries** (UMD builds): keep them out of `amd/src`, where grunt warns "File ignored because of a matching ignore pattern" even when `thirdpartylibs.xml` lists them. Put them in `thirdparty/<lib>/`, list that folder in `thirdpartylibs.xml` and load them from your module with `window.require([Config.wwwroot + '/<plugin path>/thirdparty/<lib>/<lib>.min.js'], resolve, reject)`. Remove the `sourceMappingURL` line when the `.map` is not shipped. Add the library stylesheet from JavaScript (a `<link>` appended once to `document.head`): it also works in forms loaded in modals, after the page head was printed.
+   - Libraries that pick their language from the browser must get the page language (`document.documentElement.lang`).
+   - `getString()` is asynchronous: when it runs on every keystroke, ignore answers to older calls (a counter), or an old message comes back.
 7. **`amd/build`:** commit the `*.min.js` and `.map` files built by Moodle's grunt. Never commit builds without `.min`.
 8. **AJAX:** External Services in `classes/external/*` (`core_external\external_api`) and `db/services.php` (`'ajax' => true`, `capabilities`).
    - In `execute`: `validate_parameters`, `validate_context`, `require_capability`.
@@ -65,6 +69,15 @@ Reference implementations (public, follow them when in doubt):
     - Guard DDL with `field_exists()`, `index_exists()` and `table_exists()`, so the step also works on sites installed from an old `install.xml`.
     - A new relation column on existing data needs a backfill in the same step (for `course`: from `{course_modules}` joined on `module` and `instance`).
     - After the upgrade, run `php admin/cli/check_database_schema.php`; it must report nothing for the plugin. Then delete a course on the test site.
+16. **Forms:**
+    - The form templates replace the `class` attribute of elements such as `textarea`: mark them with a `data-*` attribute instead, and use a selector more specific than `.form-control` to restyle or hide them.
+    - `.felement` is a flex container: a component injected next to an element needs `flex: 1 1 100%; width: 100%`.
+    - **Dynamic forms** (`core_form\dynamic_form`, the modals of custom field settings and others) build the form definition before they start collecting the page JavaScript: `js_call_amd()` called in `definition()` is lost. Require the module while the element is rendered, in a subclass of the element registered with `MoodleQuickForm::registerElementType()` that overrides `export_for_template()` (and `toHtml()`), skipping frozen elements.
+    - Element ids get a random suffix in dynamic forms: pass the id read from the element at render time, never a fixed `id_<name>`.
+17. **Profile fields and custom fields:**
+    - User upload, course upload and web services save values without running the form validation (`profile_save_data()`, `instance_form_save()`). Validate again where the value is saved (`edit_save_data()` for profile fields, `instance_form_save()` for custom fields), keep the stored value when the new one is invalid, and cover it with PHPUnit (`assertDebuggingCalled()` if you report it with `debugging()`).
+    - A custom field privacy provider implements `customfield_provider`; the `$exportdata->value` it receives is the displayed value (`export_value()`, often HTML). Export the stored value (`$data->get_value()`) when the display differs from the data.
+    - Data stored escaped (for example JSON with `JSON_HEX_TAG`) is decoded for display and escaped by the template, never printed as stored.
 
 ## Repository
 Copy from `moodle-local_eduplay` and adapt names and texts:
@@ -76,6 +89,10 @@ Root files:
 - `CHANGELOG.md` with a `## <release> - <YYYY-MM-DD>` section; `release.sh` reads it.
 - `SECURITY.md`, `AUTHORS.md`, `LICENSE`.
 - Optionally a short `AGENTS.md` with the code rules.
+
+New repository:
+- An empty repository has no default branch to receive a pull request: push a first commit (for example only `LICENSE`) to `main`, then open the pull request from the work branch.
+- Enable GitHub Pages with the Actions source before the first documentation deploy (`gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow`); otherwise the deploy job of `docs.yml` fails.
 
 Do not commit `docs/_build`, `dist/` or ZIP files. Avoid pre-commit hooks, docker-compose or composer setups that need PHP on the developer machine: validate locally with `act`.
 
