@@ -34,6 +34,18 @@
   3. Fill in the tag (`v<release>`) and the release notes (the fixes for the reviewer).
   4. The Marketplace automated test takes about 10 minutes.
 
+## Review statuses
+| Status | Can add a version or edit details? |
+|---|---|
+| Submitted for review (in the queue) | Yes |
+| In review (a reviewer is checking it) | No: wait |
+| Changes needed | Yes: fix and upload a new version |
+| Review passed | Yes: check every detail, then publish |
+
+- Reviews take 2 to 4 weeks, more when changes are requested.
+- Reviewer comments and status changes appear on the Jira Service Management ticket (`CONTRIB-<n>`); the maintainer needs a JSM account to read them.
+- After a new version is uploaded during "Changes needed", the status goes back to "Submitted for review".
+
 ## Plugin still under review ("Changes needed")
 - `/plugins/<component>/edit/*` returns 403. Use *Dashboard > View submission* (`/plugins/submit/step3/<component>`).
 - *Add a new version*: upload the release ZIP. The Marketplace "always checks the most recent file", so the upload is the resubmission; there is no other resubmit button.
