@@ -1,0 +1,15 @@
+{
+  "name": "moodle-by-kelsoncm",
+  "description": "Claude Code plugins for Moodle plugin developers.",
+  "owner": {
+    "name": "Kelson da Costa Medeiros",
+    "url": "https://github.com/moodle-by-kelsoncm"
+  },
+  "plugins": [
+    {
+      "name": "moodle-plugin",
+      "source": "./plugins/moodle-plugin",
+      "description": "Build, review, document and release Moodle plugins that pass the Moodle Marketplace review."
+    }
+  ]
+}
