@@ -1,0 +1,13 @@
+{
+  "name": "moodle-plugin",
+  "version": "1.0.0",
+  "description": "Agent Skill to build, review, document and release Moodle plugins that pass the Moodle Marketplace review: plugin standard, review checklist, moodle-plugin-ci with act, Sphinx docs, release and Marketplace pages.",
+  "author": {
+    "name": "Kelson da Costa Medeiros",
+    "url": "https://github.com/kelsoncm"
+  },
+  "homepage": "https://github.com/moodle-by-kelsoncm/moodle-plugin-skill",
+  "repository": "https://github.com/moodle-by-kelsoncm/moodle-plugin-skill",
+  "license": "MIT",
+  "keywords": ["moodle", "moodle-plugin", "moodle-marketplace", "moodle-plugin-ci", "skill"]
+}
