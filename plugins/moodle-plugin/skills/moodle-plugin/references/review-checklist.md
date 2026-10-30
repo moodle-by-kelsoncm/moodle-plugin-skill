@@ -4,6 +4,7 @@ Findings from real Marketplace reviews (four approved EduPlay plugins and the `m
 
 ## Blockers
 - [ ] **Backup/restore** (activity modules, blocks and any plugin with course-related data). Restore classes live in `backup/moodle2/`. A `restore/moodle2/` folder is never read, and a test that `require`s the classes by hand hides the problem. Test with a real course backup and restore.
+- [ ] **Activity table has `course`** (indexed). Without it, deleting any course on the site fails ("column m.course does not exist"). Upgrade steps use `<`, a savepoint and guarded DDL; `admin/cli/check_database_schema.php` reports nothing.
 - [ ] **Marketplace page.** The description belongs to this plugin, with correct dependencies and install path. One plugin was flagged because its description was copied from a sibling plugin.
 
 ## Security

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0 - 2026-10-30
+
+- `SKILL.md`: new item **Database (`db/`)**: required columns of an activity main table (`course` with index, `name`, `intro`/`introformat`, `timemodified`), upgrade steps with `<` and savepoints, guarded DDL, backfill of new relation columns, and the schema check after upgrade. Found on an activity module whose missing `course` column broke the deletion of every course on Moodle 5.3.
+- `references/review-checklist.md`: matching blocker entry.
+
 ## 1.0.0 - 2026-10-30
 
 First public version of the `moodle-plugin` skill, generalised from the skill used on the EduPlay Moodle Suite plugins and on `mod_imagemap`.

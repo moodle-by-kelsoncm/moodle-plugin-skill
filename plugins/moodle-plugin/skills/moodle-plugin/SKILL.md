@@ -3,7 +3,7 @@ name: moodle-plugin
 description: Use whenever you create, review, fix, document, version or publish a Moodle plugin (mod_, local_, block_, tool_, tiny_, media_, repository_, filter_, format_, theme_, qtype_ and others), including answering the Moodle Marketplace reviewer (MMR-* or CONTRIB-* tickets), preparing a release, filling in the plugin page on marketplace.moodle.com, writing the plugin documentation or running moodle-plugin-ci locally with act. Encodes what passes the Marketplace review and what it rejects.
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   repository: "https://github.com/moodle-by-kelsoncm/moodle-plugin-skill"
 ---
 
@@ -58,6 +58,13 @@ Reference implementations (public, follow them when in doubt):
 12. **Privacy API** always present (null provider if no personal data is stored).
 13. **Admin pages:** the first call after `config.php` must be visible to the code checker (`require_admin()`, `require_login()` or `admin_externalpage_setup()`). Do not hide it in your own function.
 14. **Availability:** pass `availableinfo` through `\core_availability\info::format_info($info, $course)`; otherwise the activity names disappear from the message.
+15. **Database (`db/`):**
+    - **Activity module main table** (`<x>`) always has `course` (int 10, not null, default 0, indexed) and `name`; add `intro` and `introformat` when `FEATURE_MOD_INTRO` is on (the default) and `timemodified`. Core reads `{<x>}.course` for every installed module when it deletes or resets *any* course (`remove_course_contents()`); without it every course deletion fails with "column m.course does not exist" and leaves the course half-deleted, even in courses that never used the activity.
+    - Edit `install.xml` with the XMLDB editor and keep it equal to what the upgrade steps produce.
+    - `upgrade.php`: one `if ($oldversion < X)` block per change, ending with `upgrade_mod_savepoint(true, X, '<x>')` (or the plugin type's savepoint), with `X` no greater than `version.php`. Never `<=`: the block runs again on the next version bump.
+    - Guard DDL with `field_exists()`, `index_exists()` and `table_exists()`, so the step also works on sites installed from an old `install.xml`.
+    - A new relation column on existing data needs a backfill in the same step (for `course`: from `{course_modules}` joined on `module` and `instance`).
+    - After the upgrade, run `php admin/cli/check_database_schema.php`; it must report nothing for the plugin. Then delete a course on the test site.
 
 ## Repository
 Copy from `moodle-local_eduplay` and adapt names and texts:
