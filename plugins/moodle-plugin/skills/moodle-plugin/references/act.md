@@ -49,6 +49,12 @@ Git Bash on Windows:
 
 For phpcs on changed files only, add a step to the scratch workflow: `cd moodle && $GITHUB_WORKSPACE/ci/vendor/bin/phpcs --standard=moodle <files>`.
 
+Iterating on PHP in the same container (no new `act` run):
+- The plugin inside the container is a copy (`<plugin folder>/moodle/public/<path>`), not your files. `docker cp` your changed folders in, and copy back whatever a tool changes there.
+- Fix style automatically, then copy the files back: `docker exec -w $M $C bash -lc "<plugin folder>/ci/vendor/bin/phpcbf --standard=moodle <files>"`.
+- Run the plugin tests: `docker exec -w $M $C bash -lc "vendor/bin/phpunit --testsuite <component>_testsuite --fail-on-warning"`; add `--display-notices` to see what a "Notices: 1" is.
+- New capabilities, tables or settings defaults need a fresh install: run `act` again (and bump `version.php` for the throwaway Moodle).
+
 ## Converting legacy JavaScript to ES6
 1. Wrap it in `export const init = (selector) => {...}` and read the data from `container.dataset.config`.
 2. Run `eslint --fix`. It adds empty JSDoc blocks.
@@ -71,9 +77,14 @@ act workflow_dispatch -W .github/workflows/docs.yml -j build-docs --pull=false -
    - Mount only the plugin, at `/var/www/html/public/mod/<x>`: Moodle 5.1+ serves from `public/`, and old compose files that mount at `/var/www/html/mod/...` do not load the plugin.
 2. Install the site (or let the image entrypoint do it) and wait for `install_database.php` to finish (`pgrep -f install_database.php` inside the container; on the host, a wait loop with `pgrep -f "<text>"` matches its own command line).
    - Remounting a plugin recreates the container: run `admin/cli/upgrade.php` and `admin/cli/purge_caches.php` afterwards. A plugin without `amd/build` gives a RequireJS 404 for its module; build it in the job container first.
+   - With the developer JavaScript settings (`jsrev` -1), `requirejs.php` serves `amd/build/<x>.min.js` only when `<x>.min.js.map` exists; otherwise it serves `amd/src/<x>.js` as is, and an ES6 module fails with "define() not found". A hand-written AMD module for a quick prototype needs a `.map` next to it and must `return` its default export, as Babel's output does (`return _exports.default`), or `import()` gets the module object instead of the value.
+   - Removing the containers (`docker compose down -v`, or a Docker restart that drops them) drops the database too: keep the test data in a seed script you can run again.
 3. Create test data with a CLI PHP script (`testing_util::get_data_generator()`): course, activities, plugin instance, files and restrictions. Copy it with `docker cp` and run it as `www-data`.
 4. Test in a browser.
    - Log in with the throwaway site's test account.
    - Synthetic mouse events on canvases need pauses between them, because modals and services are asynchronous.
    - Check the result in the database (`psql` in the Postgres container) and that the console has no errors.
 5. Take documentation screenshots there. For the student view, use "Log in as": `/course/loginas.php?id=<course>&user=<id>&sesskey=...`.
+   - Wait until `M.util.pending_js` is empty before a screenshot: editors and builders render late, and a background browser window may return an old frame. Check the DOM, then capture.
+   - Convert JPEG captures to PNG and crop them with `ffmpeg -i in.jpg -vf "crop=W:H:X:Y" out.png`.
+   - Logging in to the same throwaway site from two browsers can end one session ("Your session has timed out"); use one browser per site.

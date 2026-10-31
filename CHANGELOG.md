@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.3.0 - 2026-10-31
+
+Lessons from `tool_categorycustomfields` 1.0.0 and `tiny_toolbar` 1.0.0, and a review against the Moodle 5.3 developer documentation (moodledev.io and `UPGRADING.md`).
+
+- `SKILL.md`, versions: `$plugin->component` and the optional `$plugin->incompatible`.
+- `SKILL.md`, JavaScript: `core/modal` classes instead of the removed `core/modal_factory` and of jQuery modals, Bootstrap 5 markup and classes, colours through Bootstrap custom properties for the 5.3 colour modes.
+- `SKILL.md`, External Services: no `require_login()` in `execute()`, advisory `capabilities`, `classname` only, deprecation with `execute_is_deprecated()`.
+- `SKILL.md`, namespaced output, URL and exception classes available since 4.5.
+- `SKILL.md`, custom fields: a custom field area of your own (handler, management page, cleanup on delete, test generator).
+- `SKILL.md`, new item **Pages and hooks**: own pages linked from navigation callbacks, category secondary navigation, `db/hooks.php` rules, `after_standard_main_region_html_generation` to add content to core pages.
+- `SKILL.md`, new item **TinyMCE plugins**: only `tiny_` plugins change the editor, `tiny/<x>:use` checked in `is_enabled()` for 4.5, toolbar and menus applied in the TinyMCE plugin callback, button registry, selection toolbar, `editor_styles.css`, 5.0-only interfaces.
+- `SKILL.md`, new items **Tests** (PHPUnit 9.6 and 11, annotations, static providers, Behat escaping), **Activity modules on 5.x**, **Deprecating your own code** and **Subplugins**.
+- `SKILL.md`, repository: renaming a repository or changing the plugin type; Pages on private repositories; new reference implementations.
+- `references/act.md`: iterating on PHP in the job container (phpcbf, a single test suite), RequireJS developer mode and source maps, seed scripts, screenshots.
+- `references/release-marketplace.md`: normal release for a non-stable maturity; editing a published release.
+
 ## 1.2.0 - 2026-10-30
 
 Lessons from `profilefield_json` 1.1.0 and `customfield_json` 1.0.0.
