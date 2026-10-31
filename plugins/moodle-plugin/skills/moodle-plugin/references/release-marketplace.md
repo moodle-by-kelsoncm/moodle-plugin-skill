@@ -13,6 +13,8 @@
    - Use `dry-run` to only validate.
 4. Publishing the draft is the maintainer's decision: ask first.
    - `gh release edit v<release> --draft=false` (keep `--prerelease` if the maturity is not stable).
+   - If the maintainer wants a normal release for a non-stable maturity, publish with `--prerelease=false`: `release-check.yml` only warns. The Marketplace still reads the maturity from the ZIP; for a stable listing, release a new version with `MATURITY_STABLE`.
+   - The flags of a published release (`--prerelease`, title, notes) can still be edited; only its assets and tag are fixed.
    - The tag is created on publication, and the release becomes immutable.
    - Never run `gh release create` over a published release (`Cannot upload asset to an immutable release`).
 5. **Verify published release** (`release-check.yml`) checks:
