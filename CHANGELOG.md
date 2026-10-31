@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0 - 2026-10-30
+
+Lessons from `profilefield_json` 1.1.0 and `customfield_json` 1.0.0.
+
+- `SKILL.md`, JavaScript: third-party UMD libraries in `thirdparty/` loaded with `window.require`, their stylesheet added from JavaScript, page language for libraries, stale `getString()` answers.
+- `SKILL.md`, new item **Forms**: `data-*` markers instead of classes, `.felement` flex, JavaScript of elements in dynamic (modal) forms required at render time through a registered element subclass, random id suffixes.
+- `SKILL.md`, new item **Profile fields and custom fields**: validation on save paths that skip the form, custom field privacy export of the stored value, escaped storage decoded for display.
+- `SKILL.md`, repository: first commit of an empty repository and GitHub Pages before the first documentation deploy; new reference implementations.
+- `references/release-marketplace.md`: first submission of a new plugin.
+- `references/act.md`: scripted edit pitfalls (form feeds and Unicode escapes), `pgrep` self-match, remounting the throwaway Moodle.
+
 ## 1.1.0 - 2026-10-30
 
 - `SKILL.md`: new item **Database (`db/`)**: required columns of an activity main table (`course` with index, `name`, `intro`/`introformat`, `timemodified`), upgrade steps with `<` and savepoints, guarded DDL, backfill of new relation columns, and the schema check after upgrade. Found on an activity module whose missing `course` column broke the deletion of every course on Moodle 5.3.

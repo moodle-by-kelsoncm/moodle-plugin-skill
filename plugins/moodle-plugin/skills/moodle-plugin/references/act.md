@@ -57,7 +57,7 @@ For phpcs on changed files only, add a step to the scratch workflow: `cd moodle 
 5. Split functions with complexity above 20.
 6. Remove `console`, `confirm` and globals (`M.cfg` becomes `core/config`; `bootstrap` becomes jQuery).
 7. Check the indentation after `--fix`.
-8. For large edits, write a script file and run it; inline Python in a shell heredoc can turn `"\\b"` and `"\\r"` into control characters.
+8. For large edits, write a script file and run it; inline Python in a shell heredoc can turn `"\\b"` and `"\\r"` into control characters, and `sed` replacements turn `\f` (as in `\form\`) into a form feed. Check namespaces after scripted edits. Some editing tools also turn `\uXXXX` written in a file into the character itself: build it with `chr(92)` in PHP tests and check JSON escapes in the documentation.
 
 ## Documentation
 ```bash
@@ -69,7 +69,8 @@ act workflow_dispatch -W .github/workflows/docs.yml -j build-docs --pull=false -
 1. Write a `docker-compose.yml` in a scratch folder:
    - Postgres and a Moodle 5.3 image, on its own port (for example 8091).
    - Mount only the plugin, at `/var/www/html/public/mod/<x>`: Moodle 5.1+ serves from `public/`, and old compose files that mount at `/var/www/html/mod/...` do not load the plugin.
-2. Install the site (or let the image entrypoint do it) and wait for `install_database.php` to finish (`pgrep -f install_database.php`).
+2. Install the site (or let the image entrypoint do it) and wait for `install_database.php` to finish (`pgrep -f install_database.php` inside the container; on the host, a wait loop with `pgrep -f "<text>"` matches its own command line).
+   - Remounting a plugin recreates the container: run `admin/cli/upgrade.php` and `admin/cli/purge_caches.php` afterwards. A plugin without `amd/build` gives a RequireJS 404 for its module; build it in the job container first.
 3. Create test data with a CLI PHP script (`testing_util::get_data_generator()`): course, activities, plugin instance, files and restrictions. Copy it with `docker cp` and run it as `www-data`.
 4. Test in a browser.
    - Log in with the throwaway site's test account.
