@@ -3,7 +3,7 @@ name: moodle-plugin
 description: Use whenever you create, review, fix, document, version or publish a Moodle plugin (mod_, local_, block_, tool_, tiny_, media_, repository_, filter_, format_, theme_, qtype_ and others), including answering the Moodle Marketplace reviewer (MMR-* or CONTRIB-* tickets), preparing a release, filling in the plugin page on marketplace.moodle.com, writing the plugin documentation or running moodle-plugin-ci locally with act. Encodes what passes the Marketplace review and what it rejects.
 license: MIT
 metadata:
-  version: "1.3.0"
+  version: "1.4.0"
   repository: "https://github.com/moodle-by-kelsoncm/moodle-plugin-skill"
 ---
 
@@ -17,6 +17,7 @@ Reference implementations (public, follow them when in doubt):
 - `moodle-by-kelsoncm/mod_imagemap` 1.3.0: an activity module fixed after a Marketplace review (backup/restore, External Services, AMD ES6).
 - `moodle-by-kelsoncm/profilefield_json` 1.1.0 and `moodle-by-kelsoncm/customfield_json` 1.0.0: a profile field and a custom field with a bundled third-party JavaScript library, validation on every save path and an editor that also starts inside modal forms.
 - `moodle-by-kelsoncm/tool_categorycustomfields` 1.0.0: a custom field area of its own (course categories), an output hook that adds content to a core page, a web service and an event observer.
+- `theme_avasus3` 3.5.0 (AVASUS, private): a profile page with tabs that regroups the core profile tree.
 - `moodle-by-kelsoncm/tiny_toolbar` 1.0.0: a TinyMCE plugin that replaces the toolbar and menus of every editor, with a visual builder fed by the editor's button registry.
 
 ## Before you start
@@ -111,6 +112,17 @@ Reference implementations (public, follow them when in doubt):
 21. **Activity modules on 5.x:** `FEATURE_MOD_PURPOSE` is required (`FEATURE_MOD_OTHERPURPOSE` is optional and 5.1+). Optional: a `mod_<x>\courseformat\overview` class for the course overview page (5.0+), the strings `modulename_summary` and `modulename_tip` (5.2+). Course module actions go through `core_courseformat\local\cmactions` on 5.2+ (`delete`, `move_before`, `duplicate`).
 22. **Deprecating your own code:** `#[\core\attribute\deprecated('<replacement>', since: '<x.y>', mdl: '<issue>')]` plus `\core\deprecation::emit_deprecation_if_present([self::class, __FUNCTION__])` in the body, keeping the signature (4.4+).
 23. **Subplugins:** from 5.0, `db/subplugins.json` uses `subplugintypes` with paths relative to the plugin; keep `plugintypes` too for 4.5. From 5.1, define the strings `type_<type>` and `type_<type>_plural`.
+
+24. **Themes: the user profile page** (`/user/profile.php`, layout `mypublic`):
+    - The layout runs inside `$OUTPUT->header()`: its template is rendered whole and split at the main content, so the profile tree (`output.main_content`) is printed afterwards and cannot be split by the layout. Do not rebuild the tree in the layout with `core_user\output\myprofile\manager::build_tree()`: every `<plugin>_myprofile_navigation()` callback runs twice, and some add JavaScript (`tool_dataprivacy` binds the "contact DPO" handler twice).
+    - To regroup or hide items, override the renderer in the theme (`theme_<x>\output\core_user\myprofile_renderer` extending `core_user\output\myprofile\renderer`) and filter in `render_tree()`; categories and nodes are read-only (`__get`) and have no removal method. To place groups in different parts of the layout (tabs), wrap each group in a `data-*` attribute and move it with JavaScript; without JavaScript they stay in the main content.
+    - Category keys: `contact`, `badges`, `privacyandpolicies`, `coursedetails`, `miscellaneous`, `reports`, `administration`, `loginactivity`, plus plugin categories (`certificates` from `mod_certificatebeautiful`, `tool_mergeusers_info`). Node keys in `miscellaneous`: `tags`, `blogs`, `siteblogs`, `notes`, `forumposts`, `forumdiscussions`, `learningplans`, `mycustomcerts` (`mod_customcert`), `toolcertificatemy` (`tool_certificate`). Dump them for a real user before mapping: the tree changes with the viewer.
+    - The same layout serves `/user/view.php` and the "user not available" message: show your own data only when `$PAGE->pagetype === 'user-profile'` and `\core\user::can_view_profile($user)`, reading the user from `optional_param('id', $USER->id, PARAM_INT)`.
+    - Respect what core respects: `$CFG->hiddenuserfields` (unless `moodle/user:viewhiddendetails`), `maildisplay` (`core_user::MAILDISPLAY_EVERYONE`, or `moodle/site:viewuseridentity`), `$field->is_visible()` of custom profile fields (`profile_get_user_fields_with_data()`), `$CFG->profilesforenrolledusersonly`, and the description through `file_rewrite_pluginfile_urls()` and `format_text()`.
+    - Hiding `output.full_header` also hides `$PAGE->button` ("Reset page to default"); print it where it belongs (for example only for administrators).
+    - "Delete my account": check `tool_dataprivacy\api::can_create_data_deletion_request_for_self()` and `has_ongoing_request()`, then link to `/admin/tool/dataprivacy/createdatarequest.php` with `type` = `api::DATAREQUEST_TYPE_DELETE`.
+    - In Mustache, `{{#pix}}` prints an `<img>` tag, not a URL: pass `$OUTPUT->image_url()->out(false)` for `src`.
+    - A layout variant does not need a copy of the base template: add `{{$block}}` placeholders to the base and extend it (`{{< theme_<x>/standard}}`); the PHP layout can set the template name and extra context before including the base layout file.
 
 ## Repository
 Copy from `moodle-local_eduplay` and adapt names and texts:

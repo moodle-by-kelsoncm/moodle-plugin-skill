@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.0 - 2026-11-02
+
+Lessons from the user profile page of `theme_avasus3` 3.5.0.
+
+- `SKILL.md`, new item **Themes: the user profile page**: the layout cannot split the profile tree, callbacks run twice if the layout rebuilds it, regrouping through the `myprofile` renderer and JavaScript, category and node keys, `mypublic` serving other pages, visibility rules core applies, `$PAGE->button` when the header is hidden, account deletion request, `{{#pix}}` versus image URLs, layout variants through Mustache blocks.
+- `SKILL.md`: new reference implementation.
+
 ## 1.3.0 - 2026-10-31
 
 Lessons from `tool_categorycustomfields` 1.0.0 and `tiny_toolbar` 1.0.0, and a review against the Moodle 5.3 developer documentation (moodledev.io and `UPGRADING.md`).
