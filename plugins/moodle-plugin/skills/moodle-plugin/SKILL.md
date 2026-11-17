@@ -3,7 +3,7 @@ name: moodle-plugin
 description: Use whenever you create, review, fix, document, version or publish a Moodle plugin (mod_, local_, block_, tool_, tiny_, media_, repository_, filter_, format_, theme_, qtype_ and others), including answering the Moodle Marketplace reviewer (MMR-* or CONTRIB-* tickets), preparing a release, filling in the plugin page on marketplace.moodle.com, writing the plugin documentation or running moodle-plugin-ci locally with act. Encodes what passes the Marketplace review and what it rejects.
 license: MIT
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
   repository: "https://github.com/moodle-by-kelsoncm/moodle-plugin-skill"
 ---
 
@@ -14,10 +14,10 @@ Plugins built this way passed the Moodle Marketplace review on the first resubmi
 
 Reference implementations (public, follow them when in doubt):
 - `eduplay-moodle-suite/moodle-local_eduplay`, plus `moodle-media_eduplay`, `moodle-tiny_eduplay` and `moodle-repository_eduplay`: approved plugins with the CI, release and documentation setup described here.
-- `moodle-by-kelsoncm/mod_imagemap` 1.3.0: an activity module fixed after a Marketplace review (backup/restore, External Services, AMD ES6).
-- `moodle-by-kelsoncm/profilefield_json` 1.1.0 and `moodle-by-kelsoncm/customfield_json` 1.0.0: a profile field and a custom field with a bundled third-party JavaScript library, validation on every save path and an editor that also starts inside modal forms.
-- `moodle-by-kelsoncm/tool_categorycustomfields` 1.0.0: a custom field area of its own (course categories), an output hook that adds content to a core page, a web service and an event observer.
-- `moodle-by-kelsoncm/tiny_toolbar` 1.0.0: a TinyMCE plugin that replaces the toolbar and menus of every editor, with a visual builder fed by the editor's button registry.
+- `moodle-by-kelsoncm/moodle-mod_imagemap` 1.3.0: an activity module fixed after a Marketplace review (backup/restore, External Services, AMD ES6).
+- `moodle-fields-suite/moodle-profilefield_json` 1.1.0 and `moodle-fields-suite/moodle-customfield_json` 1.0.0: a profile field and a custom field with a bundled third-party JavaScript library, validation on every save path and an editor that also starts inside modal forms.
+- `moodle-fields-suite/moodle-tool_categorycustomfields` 1.0.0: a custom field area of its own (course categories), an output hook that adds content to a core page, a web service and an event observer.
+- `moodle-by-kelsoncm/moodle-tiny_toolbar` 1.0.0: a TinyMCE plugin that replaces the toolbar and menus of every editor, with a visual builder fed by the editor's button registry.
 
 ## Before you start
 - Follow the project's own conventions for issues, branches, commit messages and time tracking. If it has none, use one issue per reviewer finding and one branch per change.
@@ -113,6 +113,8 @@ Reference implementations (public, follow them when in doubt):
 23. **Subplugins:** from 5.0, `db/subplugins.json` uses `subplugintypes` with paths relative to the plugin; keep `plugintypes` too for 4.5. From 5.1, define the strings `type_<type>` and `type_<type>_plural`.
 
 ## Repository
+Name the repository `moodle-{plugintype}_{pluginname}` (for example `moodle-mod_imagemap`), as in the [Moodle plugin contribution checklist](https://moodle.atlassian.net/wiki/external/ODRhYjAyNTY4NDVmNGJlNjljN2ViMzkwYzdmYmIwMGI#Code-repository-name); the Marketplace reviewer flags other names, such as the bare component name. The component and the plugin folder do not change.
+
 Copy from `moodle-local_eduplay` and adapt names and texts:
 - `.github/workflows/`: `ci.yml`, `docs.yml`, `release.yml`, `release-check.yml` and `moodle-release.yml`.
 - `.github/scripts/release.sh`, `.github/dependabot.yml`, `docs/requirements.txt` and `docs/redirect/index.html`.
@@ -129,6 +131,8 @@ New repository:
 
 Renaming or changing the plugin type:
 - `gh repo rename` keeps a redirect from the old URL; update the local remote and every workspace that clones or mounts the old name.
+- GitHub Pages moves to `https://<owner>.github.io/<new name>/` and the old path is not redirected (404). Update the repository homepage, `github_url`/`github_repo` in `docs/*/conf.py`, the documentation links and the Marketplace page, and publish redirect pages at the old path from the organization site (`<owner>.github.io`: `/<old>/`, `/<old>/en/`, `/<old>/pt-br/`, plus a `404.html` that maps any other old page).
+- A CI step that installs a sibling plugin by repository name (`moodle-plugin-ci add-plugin <owner>/<repo>`) fails until that repository has the new name: rename the dependency first.
 - A new component is a new plugin for Moodle: sites must uninstall the old one, and its settings are not migrated. Say so in the installation page and the changelog.
 
 Do not commit `docs/_build`, `dist/` or ZIP files. Avoid pre-commit hooks, docker-compose or composer setups that need PHP on the developer machine: validate locally with `act`.

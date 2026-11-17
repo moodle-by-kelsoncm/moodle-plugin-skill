@@ -6,7 +6,7 @@
 
 An [Agent Skill](https://agentskills.io) for building, reviewing, documenting and releasing **Moodle plugins that pass the Moodle Marketplace review**. It is packaged as a Claude Code plugin, and the skill folder also works in other agents that read `SKILL.md`.
 
-It encodes what was learned on approved plugins ([EduPlay Moodle Suite](https://github.com/eduplay-moodle-suite)) and on a plugin fixed after a review ([mod_imagemap](https://github.com/moodle-by-kelsoncm/mod_imagemap)):
+It encodes what was learned on approved plugins ([EduPlay Moodle Suite](https://github.com/eduplay-moodle-suite)) and on a plugin fixed after a review ([mod_imagemap](https://github.com/moodle-by-kelsoncm/moodle-mod_imagemap)):
 
 - **Plugin standard:** Moodle 4.5 and 5.3 LTS, `lang/en` only, GPL boilerplate everywhere, templates, ES6 AMD modules with `amd/build`, External Services instead of AJAX scripts, no `PARAM_RAW`, backup/restore for activities, blocks and other plugin types, Privacy API.
 - **Review checklist:** what the Marketplace reviewer flags, with the fix that passed.
@@ -49,7 +49,7 @@ Found something the reviewer flags that is not here, or a step that changed? Ope
 
 Uma [Agent Skill](https://agentskills.io) para criar, revisar, documentar e publicar **plugins Moodle que passam na revisão do Moodle Marketplace**. Vem empacotada como plugin do Claude Code, e a pasta da skill também funciona em outros agentes que leem `SKILL.md`.
 
-Ela reúne o que funcionou em plugins aprovados ([EduPlay Moodle Suite](https://github.com/eduplay-moodle-suite)) e num plugin corrigido depois da revisão ([mod_imagemap](https://github.com/moodle-by-kelsoncm/mod_imagemap)): padrão do plugin, checklist do revisor, validação local do `moodle-plugin-ci` com `act`, documentação Sphinx, release e página no Marketplace.
+Ela reúne o que funcionou em plugins aprovados ([EduPlay Moodle Suite](https://github.com/eduplay-moodle-suite)) e num plugin corrigido depois da revisão ([mod_imagemap](https://github.com/moodle-by-kelsoncm/moodle-mod_imagemap)): padrão do plugin, checklist do revisor, validação local do `moodle-plugin-ci` com `act`, documentação Sphinx, release e página no Marketplace.
 
 Instalação no Claude Code:
 
