@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.1 - 2026-11-17
+
+Lesson from the Marketplace review ("Incorrect repository name") and the rename of the `moodle-by-kelsoncm` plugin repositories.
+
+- `SKILL.md`, repository: name it `moodle-{plugintype}_{pluginname}`; after a rename, GitHub Pages moves to the new path without redirecting the old one, and CI steps that install a sibling plugin by repository name need the dependency renamed first.
+- `references/review-checklist.md`: repository name.
+- `SKILL.md` and `README.md`: links to the renamed reference repositories (`moodle-by-kelsoncm/moodle-mod_imagemap`, `moodle-by-kelsoncm/moodle-tiny_toolbar` and the `moodle-fields-suite/moodle-*` plugins).
+
 ## 1.3.0 - 2026-10-31
 
 Lessons from `tool_categorycustomfields` 1.0.0 and `tiny_toolbar` 1.0.0, and a review against the Moodle 5.3 developer documentation (moodledev.io and `UPGRADING.md`).

@@ -35,6 +35,7 @@ Findings from real Marketplace reviews (four approved EduPlay plugins and the `m
 - [ ] An editor that runs inside an iframe or a third-party editor (TinyMCE, H5P) may not even start on the reviewer's site. Explain on the plugin page how to test it.
 
 ## Marketplace description
+- [ ] Repository named `moodle-{plugintype}_{pluginname}` (reported as "Incorrect repository name" on every plugin without the `moodle-` prefix).
 - [ ] Plain text or HTML, no raw Markdown.
 - [ ] Link to the documentation.
 - [ ] What the plugin does, dependencies, supported Moodle versions and where to configure it.
