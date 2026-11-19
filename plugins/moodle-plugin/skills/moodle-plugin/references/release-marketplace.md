@@ -80,4 +80,4 @@ Form pitfalls:
 - FilePond sometimes uploads screenshots twice. Check and remove the copies before saving.
 - Browser automation may only upload files from allowed folders: copy images and ZIPs there first.
 - Page-reading tools may block output that contains URLs or cookies. Read element `innerText` instead.
-- Reviewer e-mails (MMR-* tickets): one issue per finding in the plugin repository. Some listing fields can only be edited after approval ("Update the listing after approval").
+- Reviewer e-mails (MMR-* tickets): one issue per finding in the plugin repository. A "Review passed" with a finding that "can be fixed in a future release" still gets its issue and a patch release; the approval does not wait for it. Some listing fields can only be edited after approval ("Update the listing after approval").

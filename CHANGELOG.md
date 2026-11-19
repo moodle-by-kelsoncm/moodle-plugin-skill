@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.1 - 2026-11-19
+
+Lesson from the Marketplace review of `tool_badgecustomfields` (MMR-557, passed with one non-blocking finding).
+
+- `SKILL.md`, database: change data through the DML API; the reviewer flags `$DB->execute()`, and a bulk `UPDATE` with a subquery becomes `set_field_select()`.
+- `references/review-checklist.md`: the same item.
+- `references/release-marketplace.md`: a non-blocking finding still gets an issue and a patch release.
+
 ## 1.4.0 - 2026-11-17
 
 Lessons from the user profile page of `theme_avasus3` 3.5.0.
