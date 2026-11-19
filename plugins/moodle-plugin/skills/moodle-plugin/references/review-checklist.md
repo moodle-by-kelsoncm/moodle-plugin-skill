@@ -1,6 +1,6 @@
 # Moodle Marketplace review checklist
 
-Findings from real Marketplace reviews (four approved EduPlay plugins and the `mod_imagemap` review), with the fix that passed.
+Findings from real Marketplace reviews (four approved EduPlay plugins, the `mod_imagemap` review and the Moodle Fields Suite reviews), with the fix that passed.
 
 ## Blockers
 - [ ] **Backup/restore** (activity modules, blocks and any plugin with course-related data). Restore classes live in `backup/moodle2/`. A `restore/moodle2/` folder is never read, and a test that `require`s the classes by hand hides the problem. Test with a real course backup and restore.
@@ -15,6 +15,7 @@ Findings from real Marketplace reviews (four approved EduPlay plugins and the `m
 
 ## Deprecated APIs and standards
 - [ ] `print_error()` becomes `throw new moodle_exception()`.
+- [ ] No `$DB->execute()` to change data: use the DML API (`set_field_select()` for a bulk `UPDATE` with a subquery). Flagged as non-blocking in `tool_badgecustomfields` (MMR-557).
 - [ ] `AJAX_SCRIPT` scripts become External Services (`classes/external`, `db/services.php`, `core/ajax`).
 - [ ] HTML in `echo` becomes a template; inline JavaScript becomes AMD (`js_call_amd`).
 - [ ] JavaScript in ES6 (`import`/`export`), not legacy `define([], function () {...})`.

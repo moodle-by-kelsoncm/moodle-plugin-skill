@@ -3,7 +3,7 @@ name: moodle-plugin
 description: Use whenever you create, review, fix, document, version or publish a Moodle plugin (mod_, local_, block_, tool_, tiny_, media_, repository_, filter_, format_, theme_, qtype_ and others), including answering the Moodle Marketplace reviewer (MMR-* or CONTRIB-* tickets), preparing a release, filling in the plugin page on marketplace.moodle.com, writing the plugin documentation or running moodle-plugin-ci locally with act. Encodes what passes the Marketplace review and what it rejects.
 license: MIT
 metadata:
-  version: "1.4.0"
+  version: "1.4.1"
   repository: "https://github.com/moodle-by-kelsoncm/moodle-plugin-skill"
 ---
 
@@ -78,6 +78,7 @@ Reference implementations (public, follow them when in doubt):
     - Guard DDL with `field_exists()`, `index_exists()` and `table_exists()`, so the step also works on sites installed from an old `install.xml`.
     - A new relation column on existing data needs a backfill in the same step (for `course`: from `{course_modules}` joined on `module` and `instance`).
     - After the upgrade, run `php admin/cli/check_database_schema.php`; it must report nothing for the plugin. Then delete a course on the test site.
+    - Change data through the DML API (`insert_record()`, `update_record()`, `set_field()`, `set_field_select()`, `delete_records_select()`...), also in upgrade steps and observers. The reviewer flags `$DB->execute()`. A bulk `UPDATE ... WHERE ... IN (SELECT ...)` becomes `set_field_select()` with the subquery in its `$select`. Keep `execute()` for what the DML API cannot express.
 16. **Forms:**
     - The form templates replace the `class` attribute of elements such as `textarea`: mark them with a `data-*` attribute instead, and use a selector more specific than `.form-control` to restyle or hide them.
     - `.felement` is a flex container: a component injected next to an element needs `flex: 1 1 100%; width: 100%`.
