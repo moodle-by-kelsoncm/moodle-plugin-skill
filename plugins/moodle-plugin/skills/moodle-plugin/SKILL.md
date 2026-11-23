@@ -3,7 +3,7 @@ name: moodle-plugin
 description: Use whenever you create, review, fix, document, version or publish a Moodle plugin (mod_, local_, block_, tool_, tiny_, media_, repository_, filter_, format_, theme_, qtype_ and others), including answering the Moodle Marketplace reviewer (MMR-* or CONTRIB-* tickets), preparing a release, filling in the plugin page on marketplace.moodle.com, writing the plugin documentation or running moodle-plugin-ci locally with act. Encodes what passes the Marketplace review and what it rejects.
 license: MIT
 metadata:
-  version: "1.4.1"
+  version: "1.5.0"
   repository: "https://github.com/moodle-by-kelsoncm/moodle-plugin-skill"
 ---
 
@@ -124,6 +124,17 @@ Reference implementations (public, follow them when in doubt):
     - "Delete my account": check `tool_dataprivacy\api::can_create_data_deletion_request_for_self()` and `has_ongoing_request()`, then link to `/admin/tool/dataprivacy/createdatarequest.php` with `type` = `api::DATAREQUEST_TYPE_DELETE`.
     - In Mustache, `{{#pix}}` prints an `<img>` tag, not a URL: pass `$OUTPUT->image_url()->out(false)` for `src`.
     - A layout variant does not need a copy of the base template: add `{{$block}}` placeholders to the base and extend it (`{{< theme_<x>/standard}}`); the PHP layout can set the template name and extra context before including the base layout file.
+
+25. **Icons** (checked against Moodle 5.3.1 code):
+    - **Activity modules need `pix/monologo.svg`.** For `mod_` components core looks for `monologo` first and then `icon`, in the theme (`theme/<t>/pix_plugins/mod/<x>/`) and then in the plugin. Asking for `icon` gives a developer debugging message ("The 'icon' image for activity modules has been replaced with a new 'monologo'"). Core modules ship only `monologo.svg`. An `icon.svg` is not needed on 4.5 and 5.x; keep one only if old code of yours still asks for `icon`. Other plugin types need no plugin icon.
+    - **Draw it like core:** a 24×24 `viewBox` with the shape inside about 3 to 21 (the icon sits in a coloured badge), one solid fill (core uses `#212529`) on a transparent background, and details as holes (`fill-rule="evenodd"`), not as other colours.
+    - **Core recolours it.** In the course page, the activity chooser and the blocks, Boost applies an SVG `feColorMatrix` filter that replaces every colour with the purpose colour and keeps only the alpha. Colours, gradients and `currentColor` disappear; only the silhouette and its transparency show. In dark mode (Boost colour modes, 5.3) the same filter is applied with a 30% lighter tint, so a monologo needs no dark variant. The colours are also available as `--activity<purpose>` custom properties for your own CSS.
+    - **The purpose sets the colour:** return `MOD_PURPOSE_ADMINISTRATION`, `ASSESSMENT`, `COLLABORATION`, `COMMUNICATION`, `CONTENT`, `INTERACTIVECONTENT` or `OTHER` for `FEATURE_MOD_PURPOSE` in `<x>_supports()`. `MOD_PURPOSE_INTERFACE` was removed: using it is a fatal error.
+    - **A coloured (brand) icon** is not recoloured when `<x>_is_branded()` in `lib.php` returns `true` (as `mod_bigbluebuttonbn` does), or for a single course module when its `customdata` has `filtericon` = `false` (the `nofilter` class). Without `filtericon`, core filters only when the module has a `monologo`: an old `icon.png` alone is shown as drawn. Then the SVG must read well on light and dark backgrounds.
+    - **Other icons of the plugin** (buttons, actions): map them to Font Awesome in `<component>_get_fontawesome_icon_map()` in `lib.php` (`'mod_<x>:<pix name>' => 'fa-<icon>'`), so they follow the text colour and the colour mode. An icon printed as `<img>` from your own `pix/` keeps its colours: in dark mode Boost inverts only core namespaces (`/t/`, `/e/`, `/a/` and a few `/i/`), never plugin ones.
+    - **Never build image paths by hand:** since 5.1 the web root is `public/`. Use `$OUTPUT->image_url()`, `$OUTPUT->pix_icon()` or `{{#pix}}`.
+    - **Themes change icons without touching the plugin:** put a file with the same name in `theme/<t>/pix_plugins/<type>/<plugin>/` (for example `pix_plugins/mod/forum/monologo.svg`), or in `theme/<t>/pix_core/` for core icons. Never edit the `pix/` folder of core or of another plugin: the next upgrade overwrites it. Keep one style across the course, keep enough contrast with the background, and keep text alternatives for images in content.
+    - **The Marketplace icon is a separate file**, uploaded in the plugin page form: see [references/release-marketplace.md](references/release-marketplace.md).
 
 ## Repository
 Name the repository `moodle-{plugintype}_{pluginname}` (for example `moodle-mod_imagemap`), as in the [Moodle plugin contribution checklist](https://moodle.atlassian.net/wiki/external/ODRhYjAyNTY4NDVmNGJlNjljN2ViMzkwYzdmYmIwMGI#Code-repository-name); the Marketplace reviewer flags other names, such as the bare component name. The component and the plugin folder do not change.

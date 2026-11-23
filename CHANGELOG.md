@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0 - 2026-11-23
+
+Lessons from fixing the Marketplace icons of `tiny_justify` and `tool_sentry`, and a review of activity module icons against the Moodle 5.3.1 code.
+
+- `SKILL.md`, new item **Icons**: `pix/monologo.svg` for activity modules (looked up before `icon`, which gives a debugging message), how to draw it, the purpose colour filter that keeps only the alpha (also in dark mode), the purpose constants (`MOD_PURPOSE_INTERFACE` was removed), branded icons and `filtericon`, Font Awesome maps for the other icons, image URLs through the output API, theme overrides in `pix_plugins` and `pix_core`.
+- `references/release-marketplace.md`, new section **Plugin icon**: needed by every plugin type, raster formats only, never the plugin SVG, a source file kept in the repository, and the search index that kept the old image after a replacement.
+
 ## 1.4.1 - 2026-11-19
 
 Lesson from the Marketplace review of `tool_badgecustomfields` (MMR-557, passed with one non-blocking finding).
