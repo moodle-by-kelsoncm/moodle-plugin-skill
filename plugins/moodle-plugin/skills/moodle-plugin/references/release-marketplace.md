@@ -65,7 +65,7 @@
 ## Plugin page (marketplace.moodle.com)
 - **Overview:**
   - Name.
-  - Icon of at least 200x200.
+  - Icon of at least 200x200 (see "Plugin icon" below).
   - Short description up to 256 characters.
   - Screenshots.
 - **Description:** HTML in TinyMCE (`tinymce.get('plugin_edit_description_form_description').setContent(...)` followed by `.save()`). Follow the description checklist in [review-checklist.md](review-checklist.md).
@@ -75,6 +75,14 @@
   - Website: the organisation site.
   - *Potential privacy issues*: what leaves Moodle and where it goes.
 - **Publish:** the button opens a modal with "Publish listing". Publishing is an external action: only with the maintainer's approval.
+
+Plugin icon (Overview > Icon):
+- Every plugin type needs one, not only activity modules. Without it the listing and the search results show an empty space.
+- It is not taken from the plugin ZIP. Upload it in the form as PNG, JPEG, GIF or WebP, at least 200x200; 512x512 is a good source size. The Marketplace stores and shows a 100x100 copy.
+- Never upload the plugin SVG (`pix/icon.svg`, `pix/monologo.svg` or a TinyMCE button icon): they are monochrome and often use `currentColor`, and the stored copy came out fully transparent.
+- Draw a coloured square (a rounded square with a solid or gradient background and a white symbol) that reads at 100x100 on a white page. Keep the same style across the plugins of a suite.
+- Keep the source file in the repository (for example `docs/marketplace/icon.png`), so it can be uploaded again.
+- After saving, check the listing (`/plugins/<component>`) and the search (`/?q=<component>`). Replacing an existing icon updated the listing at once, but the search kept showing the old image after several saves, while a first icon appeared in both. If the search keeps the old image, wait for the next index update or open a support request.
 
 Form pitfalls:
 - FilePond sometimes uploads screenshots twice. Check and remove the copies before saving.
