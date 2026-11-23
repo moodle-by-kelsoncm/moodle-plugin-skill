@@ -12,6 +12,7 @@ Findings from real Marketplace reviews (four approved EduPlay plugins, the `mod_
 - [ ] Every write endpoint: `require_sesskey` or an External Service, `require_capability` in the right context, and a check that the record belongs to the instance of the course module.
 - [ ] No declared capability without use (the reviewer asked to remove an unused `manage` capability).
 - [ ] Every declared setting is used (a cache duration setting had no effect).
+- [ ] A regex `paramtype` of `admin_setting_configtext` has no modifiers (`/.../i` breaks the install: it is read as an unknown `PARAM_*` type).
 
 ## Deprecated APIs and standards
 - [ ] `print_error()` becomes `throw new moodle_exception()`.

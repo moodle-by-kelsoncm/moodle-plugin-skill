@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.1 - 2026-11-23
+
+Lesson from `tool_opensearch` 0.1.0 on Moodle 5.3.
+
+- `SKILL.md`, admin pages: a regex `paramtype` of `admin_setting_configtext` must have no modifiers; with `/i` it is read as a `PARAM_*` type and the install fails in `core\param::from_type()`.
+- `references/review-checklist.md`: the same item.
+
 ## 1.5.0 - 2026-11-23
 
 Lessons from fixing the Marketplace icons of `tiny_justify` and `tool_sentry`, and a review of activity module icons against the Moodle 5.3.1 code.
